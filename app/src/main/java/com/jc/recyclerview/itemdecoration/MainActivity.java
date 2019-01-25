@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mDatas = new ArrayList<>();
         int temp = 0;
         for (int i = 0; i < 150; i++) {
-            if (i % 3 == 0) {
+            if (i % 4 == 0 || i % 7 == 0) {
                 temp++;
             }
             mDatas.add(new RecyclerBean(String.valueOf(temp)));
