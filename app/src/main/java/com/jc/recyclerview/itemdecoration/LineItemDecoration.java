@@ -28,11 +28,12 @@ public class LineItemDecoration extends RecyclerView.ItemDecoration {
         mDatas = datas;
     }
 
+
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        super.onDrawOver(c, parent, state);
         drawVertical(c, parent);
     }
-
 
     private void drawVertical(Canvas c, RecyclerView parent) {
         final int left = parent.getPaddingLeft();
@@ -40,17 +41,23 @@ public class LineItemDecoration extends RecyclerView.ItemDecoration {
 
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            RecyclerBean recyclerBean = mDatas.get(i);
+
             final View child = parent.getChildAt(i);
             final int top = child.getTop() - mTitleHeight;
             final int bottom = top + mTitleHeight;
+            int position = parent.getChildAdapterPosition(child);
+            // 而不是从View的下标开始计算
+//            if (position % 4 == 0) {
+//                c.drawRect(new Rect(left, top, right, bottom), mPaint);
+//            }
 
-            if (i == 0) { // 绘制第一个
+            if (position == 0) { // 绘制第一个
                 mPaint.setColor(Color.GRAY);
                 c.drawRect(new Rect(left, top, right, bottom), mPaint);
             } else {
                 // 不等于最后一个
-                RecyclerBean nextRecyclerBean = mDatas.get(i - 1);
+                RecyclerBean recyclerBean = mDatas.get(position);
+                RecyclerBean nextRecyclerBean = mDatas.get(position - 1);
                 if (!nextRecyclerBean.getText().equals(recyclerBean.getText())) {
                     c.drawRect(new Rect(left, top, right, bottom), mPaint);
                 }
@@ -62,8 +69,20 @@ public class LineItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        int position = ((RecyclerView.LayoutParams) view.getLayoutParams()).getViewLayoutPosition();
-        // 返回总宽度？？？
-        outRect.set(0, mTitleHeight, -1, -1);
+        int position = parent.getChildAdapterPosition(view);
+        // 从item的下标开始计算的，
+//        outRect.set(0, position % 4 == 0 ? mTitleHeight : 0, 0, 0);
+
+
+        //ItemView的position==0 或者 当前ItemView的data的tag和上一个ItemView的不相等，则为当前ItemView设置top 偏移量
+        if (position == 0) {
+            outRect.set(0, mTitleHeight, 0, 0);
+        } else {
+            RecyclerBean recyclerBean = mDatas.get(position);
+            RecyclerBean nextRecyclerBean = mDatas.get(position - 1);
+            if (!recyclerBean.getText().equals(nextRecyclerBean.getText())) {
+                outRect.set(0, mTitleHeight, 0, 0);
+            }
+        }
     }
 }

@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new LineItemDecoration(this, mDatas));
+//        mRecyclerView.addItemDecoration(new LinearLayoutColorDivider(getResources(), R.color.colorPrimary,
+//                R.dimen.fab_margin));
     }
 
     private void mockData() {
