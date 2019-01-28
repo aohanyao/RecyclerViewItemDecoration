@@ -26,7 +26,6 @@ public class LineItemDecoration extends RecyclerView.ItemDecoration {
     private int mTitleHeight = (int) dp2px(38);
     private int mLeftWidth = (int) dp2px(48);
     private int mLineHeight = (int) dp2px(10);
-
     private String TAG = getClass().getSimpleName();
 
     private Paint mPaint;
@@ -42,33 +41,71 @@ public class LineItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
+        drawFloorSuspension(c, parent);
         drawSuspension(c, parent);
         //
+    }
+
+    private void drawFloorSuspension(Canvas canvas, RecyclerView parent) {
+        // 默认就显示在最上面
+        final int left = parent.getPaddingLeft();
+        int pos = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
+        View child = parent.findViewHolderForLayoutPosition(pos).itemView;
+        boolean isAnim = false;
+        // 当前这个
+        RecyclerBean currentRecyclerBean = mDatas.get(pos);
+        // 绘制楼层
+        Rect floorRect = new Rect(left,
+                mTitleHeight,
+                mLeftWidth + child.getPaddingLeft(),
+                child.getHeight() + mTitleHeight);
+
+
+        if (pos <= mDatas.size() - 3) {
+            // 当前这个和下下一个进行对比
+            // 位置不好判断
+
+        }
+
+
+        mPaint.setColor(Color.WHITE);
+        canvas.drawRect(floorRect, mPaint);
+
+        mPaint.setColor(Color.BLACK);
+        canvas.drawText(currentRecyclerBean.getFloorName(),
+                mLeftWidth - 80,
+                floorRect.bottom - 100,
+                mPaint);
+
+        if (isAnim) {
+            canvas.restore();
+        }
     }
 
     private void drawSuspension(Canvas canvas, RecyclerView parent) {
         // 默认就显示在最上面
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
-        int pos
-                = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-        drawH(canvas, left, right, parent.getPaddingTop(), mTitleHeight, mDatas.get(pos));
+        int pos = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
+        boolean isAnim = false;
+        // 当前这个
+        RecyclerBean currentRecyclerBean = mDatas.get(pos);
 
-        // 绘制楼层
-        final View child = parent.getChildAt(pos);
-        Rect floorRect = new Rect(left,
-                parent.getPaddingTop() + mTitleHeight,
-                mLeftWidth + child.getPaddingLeft(),
-                child.getHeight() + mTitleHeight);
 
-        mPaint.setColor(Color.parseColor("#cccccc"));
-        canvas.drawRect(floorRect, mPaint);
+        if (pos <= mDatas.size() - 2) {
+            RecyclerBean nextRecyclerBean = mDatas.get(pos + 1);
+            // 做切换动画
+            canvas.save();
+            isAnim = true;
+        }
 
-        mPaint.setColor(Color.BLACK);
-        canvas.drawText(mDatas.get(pos).getFloorName(),
-                mLeftWidth - 80,
-                floorRect.bottom - 100,
-                mPaint);
+
+        drawH(canvas, left, right, parent.getPaddingTop(), mTitleHeight, currentRecyclerBean);
+
+        if (isAnim) {
+            canvas.restore();
+        }
+
     }
 
     @Override
@@ -132,7 +169,7 @@ public class LineItemDecoration extends RecyclerView.ItemDecoration {
                         }
                     }
 
-                    mPaint.setColor(Color.parseColor("#cccccc"));
+                    mPaint.setColor(Color.WHITE);
                     // 左边的楼层信息
                     Rect floorRect = new Rect(left, child.getBottom() - child.getHeight(),
                             mLeftWidth + child.getPaddingLeft(), child.getBottom() + 2);
