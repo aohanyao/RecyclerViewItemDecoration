@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jc.recyclerview.itemdecoration.bean.RecyclerBean;
+
 import java.util.List;
 
 /**
@@ -36,7 +38,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mText.setText(mDatas.get(position).getText());
+        holder.mText.setText(mDatas.get(position).getRoomName());
     }
 
     @Override

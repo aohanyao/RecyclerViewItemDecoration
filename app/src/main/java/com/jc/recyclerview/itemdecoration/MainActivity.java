@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
+import com.jc.recyclerview.itemdecoration.bean.RecyclerBean;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,13 +40,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mockData() {
+
+
         mDatas = new ArrayList<>();
-        int temp = 0;
-        for (int i = 0; i < 150; i++) {
-            if (i % 4 == 0 || i % 7 == 0) {
-                temp++;
+        // 20个分期
+        for (int stage = 1; stage < 20; stage++) {
+            int temp = 1;
+            for (int i = 1; i < 25; i++) {
+                if (i % 4 == 0 || i % 7 == 0) {
+                    temp++;
+                }
+                mDatas.add(new RecyclerBean(String.valueOf(i),
+                        String.valueOf(temp),
+                        String.valueOf(stage)));
             }
-            mDatas.add(new RecyclerBean(String.valueOf(temp)));
         }
     }
 
